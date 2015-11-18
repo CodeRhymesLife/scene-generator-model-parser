@@ -16,7 +16,6 @@ $json = OpenUrlAndRunScript -Url "$Folder/index.html" -Script @'
 
 # Parse the json
 $nameAndFile = "$json" | ConvertFrom-Json
-# ConvertTo-Json $nameAndFile | Write-Output
 
 # Create a new folder for our model files
 $namedModelsFolder = "namedModels"
