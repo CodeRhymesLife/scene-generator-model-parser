@@ -14,7 +14,7 @@ print(folder)
 print(completeObjName)
 
 import os
-completeModelPath = folder + "\complete"
+completeModelPath = folder + "\_complete"
 if not os.path.exists(completeModelPath):
     os.makedirs(completeModelPath)
 
