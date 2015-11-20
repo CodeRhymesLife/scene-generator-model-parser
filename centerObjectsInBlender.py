@@ -20,6 +20,15 @@ if not os.path.exists(completeModelPath):
 
 import bpy		
 
+def get_object_global_location(obj):
+	v = obj.data.vertices[0].co
+	mat = obj.matrix_world
+
+	# Multiply matrix by vertex
+	loc = mat * v
+	print(loc)
+	return loc
+
 # Remove all objects from the scene
 # NOTE:
 #	An exception is thrown if no objets exist
@@ -52,6 +61,10 @@ candidate_list = [item.name for item in bpy.data.objects if item.type == "MESH"]
 for object_name in candidate_list:
 	bpy.data.objects[object_name].select = True
 
+# Use the last object in the list to calculate the models relative position in the body
+objectUsedToCalculateRelativeModelPosition = bpy.data.objects[candidate_list[-1]]
+objectUsedToCalculateRelativeModelPosition_oldLocation = get_object_global_location(objectUsedToCalculateRelativeModelPosition)
+
 # Move the origin to the center of the object
 bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
 
@@ -65,6 +78,10 @@ for area in bpy.context.screen.areas:
 		bpy.ops.view3d.snap_cursor_to_center(override)
 		bpy.ops.view3d.snap_selected_to_cursor(override, use_offset=True)
 		break
+
+# Now that the model have moved calculate its old origin by measuring the displacement of the measuring object
+objectUsedToCalculateRelativeModelPosition_newLocation = get_object_global_location(objectUsedToCalculateRelativeModelPosition)
+relativeModelPosition = objectUsedToCalculateRelativeModelPosition_oldLocation - objectUsedToCalculateRelativeModelPosition_newLocation
 
 completeModelFileName = completeModelPath + "\\" + completeObjName + ".obj"
 bpy.ops.export_scene.obj(filepath=completeModelFileName, use_selection=True)
