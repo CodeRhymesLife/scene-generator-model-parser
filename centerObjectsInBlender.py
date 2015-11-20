@@ -45,5 +45,26 @@ for item in obj_list:
     full_path_to_file = os.path.join(folder, item)
     bpy.ops.import_scene.obj(filepath=full_path_to_file)
 
+# Select all objects then center the entire model
+
+# gather list of items of interest and select only them
+candidate_list = [item.name for item in bpy.data.objects if item.type == "MESH"]
+for object_name in candidate_list:
+	bpy.data.objects[object_name].select = True
+
+# Move the origin to the center of the object
+bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
+
+# Center the whole model by:
+#	1) Snap the cursor to the center
+#	2) Snap the selected objects to the cursor
+for area in bpy.context.screen.areas:
+	if area.type == 'VIEW_3D':
+		override = bpy.context.copy()
+		override['area'] = area
+		bpy.ops.view3d.snap_cursor_to_center(override)
+		bpy.ops.view3d.snap_selected_to_cursor(override, use_offset=True)
+		break
+
 completeModelFileName = completeModelPath + "\\" + completeObjName + ".obj"
-bpy.ops.export_scene.obj(filepath=completeModelFileName)
+bpy.ops.export_scene.obj(filepath=completeModelFileName, use_selection=True)
