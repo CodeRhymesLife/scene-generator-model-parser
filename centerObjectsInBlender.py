@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import argparse
 parser = argparse.ArgumentParser(description='Process arguments')
 parser.add_argument("--folder")
@@ -85,3 +85,15 @@ relativeModelPosition = objectUsedToCalculateRelativeModelPosition_oldLocation -
 
 completeModelFileName = completeModelPath + "\\" + completeObjName + ".obj"
 bpy.ops.export_scene.obj(filepath=completeModelFileName, use_selection=True)
+
+# Add the original position to the .obj file as a comment
+file = open(completeModelFileName,'r')
+data = file.read()
+file.close()
+
+file = open(completeModelFileName, 'w')
+positionStr = ', '.join(str(val) for val in relativeModelPosition)
+file.write("# relative position: [" + positionStr + "]\n" + data)
+
+file.write(data)
+file.close()
