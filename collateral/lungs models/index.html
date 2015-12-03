@@ -1,0 +1,104 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!-- saved from url=(0044)http://localhost:8080/SIG-SceneGen/scene/101 -->
+
+<html pmbx_context="FB0D5CC0-8222-4B71-8859-785E715CDC16">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Scene</title>
+    <!--
+    <base href="http://localhost:8080/SIG-SceneGen/">-->
+    <base href=".">
+    <link media="screen" type="text/css" href="./styles/cga.css" rel="stylesheet">
+    <link media="screen" type="text/css" href="./styles/ava.css" rel="stylesheet">
+
+    <script src="./scripts/3rdparty/three.min.56.js">;</script>
+    <script src="./scripts/3rdparty/obj_loader.js">;</script>
+    <script src="./scripts/3rdparty/jquery-1.10.2.js">;</script>
+    <script src="./scripts/3rdparty/jquery.mousewheel.min.js">;</script>
+
+    <script src="./scripts/utils/DOMUtils.js">;</script>
+    <script src="./scripts/utils/Lang.js">;</script>
+    <script src="./scripts/utils/UI_Panel.js">;</script>
+
+    <script src="./scripts/cga/CGA_BaseController.js">;</script>
+    <script src="./scripts/cga/CGA_ExamineCamera.js">;</script>
+    <script src="./scripts/cga/CGA_GeometryObject.js">;</script>
+    <script src="./scripts/cga/CGA_GraphicsEngine.js">;</script>
+    <script src="./scripts/cga/CGA_GroupObject.js">;</script>
+    <script src="./scripts/cga/CGA_InteractionManager.js">;</script>
+    <script src="./scripts/cga/CGA_Main.js">;</script>
+    <script src="./scripts/cga/CGA_MeshLoader.js">;</script>
+    <script src="./scripts/cga/CGA_MeshManager.js">;</script>
+    <script src="./scripts/cga/CGA_ObjectDescriptor.js">;</script>
+    <script src="./scripts/cga/CGA_Scene.js">;</script>
+    <script src="./scripts/cga/CGA_UI_HelpPanel.js">;</script>
+    <script src="./scripts/cga/CGA_UI_LoadProgressPanel.js">;</script>
+
+    <script src="./scripts/ava/AVA_ContentsPanel.js">;</script>
+    <script src="./scripts/ava/AVA_Controller.js">;</script>
+    <script src="./scripts/ava/AVA_Main.js">;</script>
+    <script src="./scripts/ava/AVA_PickingPanel.js">;</script>
+
+    <script>
+         // Globals
+        "use strict";
+
+        var sceneObjectDescriptors =
+        [new CGA_ObjectDescriptor( 7228, "Bronchus", "models/2905.obj", { ambient: "#000000", diffuse: "#86d0f9", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7229, "Lower Lobe of Left Lung", "models/2898.obj", { ambient: "#8c8c00", diffuse: "#ff80c0", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7230, "Lower Lobe of Right Lung", "models/2886.obj", { ambient: "#8c8c00", diffuse: "#ff80c0", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7231, "Middle Lobe of Lung", "models/2899.obj", { ambient: "#8c8c00", diffuse: "#ff80c0", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7232, "Trachea", "models/2900.obj", { ambient: "#000000", diffuse: "#86d0f9", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7233, "Upper Lobe of Left Lung", "models/2897.obj", { ambient: "#8c8c00", diffuse: "#ff80c0", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+new CGA_ObjectDescriptor( 7234, "Upper Lobe of Right Lung", "models/2885.obj", { ambient: "#8c8c00", diffuse: "#ff80c0", emissive: "#000000", specular: "#ffffff", shininess: 10, alpha: 1.000000}, true, {}),
+];
+
+        // Initialize page when ready
+        $(document).ready(function ()
+        {
+            if (typeof errorMessage !== 'undefined')
+            {
+                var msg = "Errors occurred while preparing this scene:\n\n" + errorMessage
+
+                console.log(msg);
+                alert(msg);
+            }
+
+            // Configure viewer
+            var cgaConfig =
+            {
+                elements: {
+                    gfx_container: document.getElementById("cga_gfx_container"),
+                },
+                gfx: {
+                    camera: {position: { x: -4.563025, y: 17.866751, z: 417.744326 },rotation: { x: -0.042744, y: -0.010913, z: 0.061083 },target: { x: 0.000000, y: 0.000000, z: 0.000000 },up: { x: -0.061042, y: 0.997195, z: -0.043316 },},
+                },
+                interaction: {},
+                url: "/SIG-SceneGen/",
+            };
+
+            // Load AVA
+            var mainApp = new CGA_Main(cgaConfig);
+            mainApp.addController("base", new CGA_BaseController(mainApp));
+            var ava = new AVA_Main(mainApp, sceneObjectDescriptors);
+        });
+
+    </script>
+</head>
+<body>
+    <div id="cga_gfx_container">
+        <div id="cga_lpp_wrap"><div id="cga_lpp">&#160;</div></div>
+
+        <div id="cga_help_wrap"><div id="cga_help">&#160;</div></div>
+
+        <div id="ava_ui_container">
+            <div id="ava_ui_right_panel"><div id="ava_contents">&#160;</div></div>
+            <div id="ava_ui_left_panel"><div id="ava_picking">&#160;</div></div>
+        </div>
+
+        <div id="cga_help_button">&#160;</div>
+    </div>
+</body>
+</html>
