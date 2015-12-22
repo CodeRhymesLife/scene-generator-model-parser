@@ -54,6 +54,12 @@ for item in obj_list:
     full_path_to_file = os.path.join(folder, item)
     bpy.ops.import_scene.obj(filepath=full_path_to_file)
 
+    # Give the object it's name
+    imported_objects = [obj for obj in bpy.data.meshes if obj.tag is False]
+    for imported_obj in imported_objects:
+        imported_obj.name = item[:-3]
+        imported_obj.tag = True
+
 # Select all objects then center the entire model
 
 # gather list of items of interest and select only them
