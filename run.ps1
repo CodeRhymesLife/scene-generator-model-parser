@@ -1,6 +1,7 @@
 Param(
   [switch]$Rename,
-  [switch]$ShowCommands
+  [switch]$ShowCommands,
+  [switch]$ShowBlender
 )
 
 if($ShowCommands) {
@@ -61,7 +62,11 @@ if(!$Env:BlenderLocation -or !(Test-Path $Env:BlenderLocation)) {
 
 # Start Blender in the background
 # And run the script that loads all objects and places them at origin
-Start-Process -FilePath "$Env:BlenderLocation\blender.exe" -ArgumentList "--background --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$modelName`""
+$backgroundFlag = "";
+if(!$ShowBlender) {
+    $backgroundFlag = "--background"
+}
+Start-Process -FilePath "$Env:BlenderLocation\blender.exe" -ArgumentList "$backgroundFlag --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$modelName`""
 
 Start $modelsFolder
 
