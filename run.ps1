@@ -7,12 +7,12 @@ if($ShowCommands) {
     Set-PSDebug -Trace 1
 }
 
-Function Select-SceneFolder() {
+Function Select-Folder($Description) {
 
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") | Out-Null     
 
     [System.Windows.Forms.FolderBrowserDialog] $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $dialog.Description = "Select unziped model folder"
+    $dialog.Description = $Description
 
     if ($dialog.ShowDialog() -eq "OK") {
         return $dialog.SelectedPath
@@ -24,7 +24,7 @@ Function Select-SceneFolder() {
 }
 
 # Get the scene folder
-$sceneFolder = Select-SceneFolder;
+$sceneFolder = Select-Folder -Description "Select unzipped model folder";
 if([string]::IsNullOrEmpty($sceneFolder)) {
     Write-Error "Please select a valid scene folder"
     exit
@@ -40,9 +40,28 @@ if($Rename) {
     AddNamesToModels -Folder $sceneFolder -NamedModelFolder $modelsFolder
 }
 
+# Ensure the blender path is set properly
+if(!$Env:BlenderLocation -or !(Test-Path $Env:BlenderLocation)) {
+    Write-Warning "This script requires Blender. Please show me where it lives"
+
+    $blenderFolder = Select-Folder -Description "Please select folder containing blender.exe (e.g. ...\Blender Foundation\Blender\)";
+
+    if([string]::IsNullOrEmpty($blenderFolder)) {
+        Write-Error "Please select a valid folder"
+        exit
+    }
+
+    if(!(Test-Path $blenderFolder)) {
+        Write-Error "Blender folder invalid"
+        exit
+    }
+
+    $Env:BlenderLocation = $blenderFolder
+}
+
 # Start Blender in the background
 # And run the script that loads all objects and places them at origin
-Start-Process -FilePath "C:\Program Files\Blender Foundation\Blender\blender.exe" -ArgumentList "--background --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$modelName`""
+Start-Process -FilePath "$Env:BlenderLocation\blender.exe" -ArgumentList "--background --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$modelName`""
 
 Start $modelsFolder
 
