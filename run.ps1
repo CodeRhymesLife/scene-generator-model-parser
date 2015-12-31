@@ -1,7 +1,9 @@
 Param(
   [switch]$Rename,
   [switch]$ShowCommands,
-  [switch]$ShowBlender
+  [switch]$ShowBlender,
+  [String]$SceneFolder,
+  [String]$OrganName
 )
 
 if($ShowCommands) {
@@ -25,20 +27,30 @@ Function Select-Folder($Description) {
 }
 
 # Get the scene folder
-$sceneFolder = Select-Folder -Description "Select unzipped model folder";
-if([string]::IsNullOrEmpty($sceneFolder)) {
-    Write-Error "Please select a valid scene folder"
-    exit
+if([string]::IsNullOrEmpty($SceneFolder)) {
+	$SceneFolder = Select-Folder -Description "Select unzipped model folder";
+	if([string]::IsNullOrEmpty($SceneFolder)) {
+		Write-Error "Please select a valid scene folder"
+		exit
+	}
 }
 
-$modelName = Read-Host "What does this scene model? (e.g. Brain, Heart, ect)"
+# Get the organ's name
+if([string]::IsNullOrEmpty($OrganName)) {
+    $OrganName = Read-Host "What does this scene model? (e.g. Brain, Heart, ect)"
+	if([string]::IsNullOrEmpty($OrganName)) {
+		Write-Error "Please enter a valid organ name"
+		exit
+	}
+}
 
-$modelsFolder = "$sceneFolder\models"
+
+$modelsFolder = "$SceneFolder\models"
 if($Rename) {
     # Add the correct name to each model file
     . ((Split-Path $MyInvocation.MyCommand.Path) + "\parseNameAndFile.ps1")
-    $modelsFolder = "$sceneFolder\models\namedModels"
-    AddNamesToModels -Folder $sceneFolder -NamedModelFolder $modelsFolder
+    $modelsFolder = "$SceneFolder\models\namedModels"
+    AddNamesToModels -Folder $SceneFolder -NamedModelFolder $modelsFolder
 }
 
 # Ensure the blender path is set properly
@@ -66,7 +78,7 @@ $backgroundFlag = "";
 if(!$ShowBlender) {
     $backgroundFlag = "--background"
 }
-Start-Process -FilePath "$Env:BlenderLocation\blender.exe" -ArgumentList "$backgroundFlag --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$modelName`""
+Start-Process -FilePath "$Env:BlenderLocation\blender.exe" -ArgumentList "$backgroundFlag --python centerObjectsInBlender.py -- --folder `"$modelsFolder`" --newModelName `"$OrganName`""
 
 Start $modelsFolder
 
