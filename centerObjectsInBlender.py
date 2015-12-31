@@ -115,6 +115,7 @@ for object_name in organ_parts:
 for object_name in organ_parts:
     organ_part = bpy.data.objects[object_name]
     organ_part.select = True
+    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
     bpy.ops.view3d.snap_cursor_to_center(context)
     bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=False)
     organ_part_filename = new_model_files_dir + "\\" + object_name + ".obj"
