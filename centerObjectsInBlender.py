@@ -12,7 +12,7 @@ import os
 # Define constants
 organ_name = args.newModelName
 folder = args.folder
-new_model_files_dir = os.path.join(folder, "_complete")
+new_model_files_dir = os.path.join(folder, "generated")
 metadata_filename = os.path.join(new_model_files_dir, "organ_metadata.json")
 organ_model_filename = os.path.join(new_model_files_dir, organ_name + ".obj")
 
