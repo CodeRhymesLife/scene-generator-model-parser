@@ -60,10 +60,10 @@ for item in obj_list:
     bpy.ops.import_scene.obj(filepath=full_path_to_file)
 
     # Give the object it's name
-    imported_objects = [obj for obj in bpy.data.meshes if obj.tag is False]
+    imported_objects = [obj for obj in bpy.context.selected_objects[:]]
     for imported_obj in imported_objects:
         imported_obj.name = item[:-4]
-        imported_obj.tag = True
+        imported_obj.data.name = imported_obj.name + "_MESH"
 
 # Select all objects then center the entire model
 
