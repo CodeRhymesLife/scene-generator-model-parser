@@ -7,16 +7,23 @@ parser.add_argument("--newModelName")
 # parse all args after "--"
 args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
 
-
+# Define constants
+organ_name = args.newModelName
 folder = args.folder
-completeObjName = args.newModelName
+new_model_files_dir = folder + "\_complete"
+metadata_filename = new_model_files_dir + "\\" + "organ_metadata.json"
+organ_model_filename = new_model_files_dir + "\\" + organ_name + ".obj"
+
+print(organ_name)
 print(folder)
-print(completeObjName)
+print(new_model_files_dir)
+print(metadata_filename)
+print(organ_model_filename)
 
 import os
-completeModelPath = folder + "\_complete"
-if not os.path.exists(completeModelPath):
-    os.makedirs(completeModelPath)
+
+if not os.path.exists(new_model_files_dir):
+    os.makedirs(new_model_files_dir)
 
 def location_to_json (location):
     return {
@@ -75,7 +82,6 @@ for area in bpy.context.screen.areas:
 
 # Store metadata about this organ
 organ_metadata = {};
-metadata_filename = completeModelPath + "\\" + "organ_metadata.json"
 
 # Move the origin to the center of the object
 bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
@@ -92,8 +98,7 @@ bpy.ops.view3d.snap_cursor_to_center(context)
 bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=True)
 
 # Save whole model
-completeModelFileName = completeModelPath + "\\" + completeObjName + ".obj"
-bpy.ops.export_scene.obj(filepath=completeModelFileName, use_selection=True)
+bpy.ops.export_scene.obj(filepath=organ_model_filename, use_selection=True)
 
 # Save the offset of individual parts
 organ_part_offsets = organ_metadata["parts"] = {};
@@ -112,7 +117,7 @@ for object_name in organ_parts:
     organ_part.select = True
     bpy.ops.view3d.snap_cursor_to_center(context)
     bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=False)
-    organ_part_filename = completeModelPath + "\\" + object_name + ".obj"
+    organ_part_filename = new_model_files_dir + "\\" + object_name + ".obj"
     bpy.ops.export_scene.obj(filepath=organ_part_filename, use_selection=True)
     organ_part.select = False
 
