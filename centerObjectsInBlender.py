@@ -7,20 +7,20 @@ parser.add_argument("--newModelName")
 # parse all args after "--"
 args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
 
+import os
+
 # Define constants
 organ_name = args.newModelName
 folder = args.folder
-new_model_files_dir = folder + "\_complete"
-metadata_filename = new_model_files_dir + "\\" + "organ_metadata.json"
-organ_model_filename = new_model_files_dir + "\\" + organ_name + ".obj"
+new_model_files_dir = os.path.join(folder, "_complete")
+metadata_filename = os.path.join(new_model_files_dir, "organ_metadata.json")
+organ_model_filename = os.path.join(new_model_files_dir, organ_name + ".obj")
 
 print(organ_name)
 print(folder)
 print(new_model_files_dir)
 print(metadata_filename)
 print(organ_model_filename)
-
-import os
 
 if not os.path.exists(new_model_files_dir):
     os.makedirs(new_model_files_dir)
@@ -62,7 +62,7 @@ for item in obj_list:
     # Give the object it's name
     imported_objects = [obj for obj in bpy.data.meshes if obj.tag is False]
     for imported_obj in imported_objects:
-        imported_obj.name = item[:-3]
+        imported_obj.name = item[:-4]
         imported_obj.tag = True
 
 # Select all objects then center the entire model
@@ -118,7 +118,7 @@ for object_name in organ_parts:
     bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
     bpy.ops.view3d.snap_cursor_to_center(context)
     bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=False)
-    organ_part_filename = new_model_files_dir + "\\" + object_name + ".obj"
+    organ_part_filename = os.path.join(new_model_files_dir, object_name + ".obj")
     bpy.ops.export_scene.obj(filepath=organ_part_filename, use_selection=True)
     organ_part.select = False
 
