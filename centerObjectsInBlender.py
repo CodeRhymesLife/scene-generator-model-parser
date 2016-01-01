@@ -101,23 +101,22 @@ bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=True)
 bpy.ops.export_scene.obj(filepath=organ_model_filename, use_selection=True)
 
 # Save the offset of individual parts
-organ_part_offsets = organ_metadata["parts"] = {};
+organ_part_offsets = organ_metadata["parts"] = [];
 
-# Loop over each part
-#   1) Save it's offset within the organ
-#   2) Deselect it
-for object_name in organ_parts:
-    organ_part = bpy.data.objects[object_name]
-    organ_part_offsets[object_name] = location_to_json(organ_part.location)
-    organ_part.select = False
+# Deselct all objects
+for selected_obj in bpy.context.selected_objects[:]:
+    selected_obj.select = False
 
 # Save the object with it's origin at the center
 for object_name in organ_parts:
     organ_part = bpy.data.objects[object_name]
     organ_part.select = True
-    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
     bpy.ops.view3d.snap_cursor_to_center(context)
-    bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=False)
+    bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=True)
+    organ_part_offsets.append({
+        "name": object_name,
+        "file": object_name + ".obj",
+    })
     organ_part_filename = os.path.join(new_model_files_dir, object_name + ".obj")
     bpy.ops.export_scene.obj(filepath=organ_part_filename, use_selection=True)
     organ_part.select = False
