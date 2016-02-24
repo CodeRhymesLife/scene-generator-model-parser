@@ -13,17 +13,21 @@ import os
 organ_name = args.newModelName
 folder = args.folder
 new_model_files_dir = os.path.join(folder, "generated")
+centered_model_files_dir = os.path.join(new_model_files_dir, "centered")
 metadata_filename = os.path.join(new_model_files_dir, "organ_metadata.json")
 organ_model_filename = os.path.join(new_model_files_dir, organ_name + ".obj")
 
 print(organ_name)
 print(folder)
 print(new_model_files_dir)
+print(centered_model_files_dir)
 print(metadata_filename)
 print(organ_model_filename)
 
 if not os.path.exists(new_model_files_dir):
     os.makedirs(new_model_files_dir)
+if not os.path.exists(centered_model_files_dir):
+    os.makedirs(centered_model_files_dir)
 
 def location_to_json (location):
     return {
@@ -107,17 +111,24 @@ organ_part_offsets = organ_metadata["parts"] = [];
 for selected_obj in bpy.context.selected_objects[:]:
     selected_obj.select = False
 
-# Save the object with it's origin at the center
+# Save the object parts
 for object_name in organ_parts:
     organ_part = bpy.data.objects[object_name]
     organ_part.select = True
+
+    # Save each model file after it's been moved to the center, but still has it's offset
+    # based on the center of the whole model
+    organ_part_filename = os.path.join(new_model_files_dir, object_name + ".obj")
+    bpy.ops.export_scene.obj(filepath=organ_part_filename, use_selection=True)
+
+    # Save each model file after it's origin has been moved to the center
     bpy.ops.view3d.snap_cursor_to_center(context)
     bpy.ops.view3d.snap_selected_to_cursor(context, use_offset=True)
     organ_part_offsets.append({
         "name": object_name,
         "file": object_name + ".obj",
     })
-    organ_part_filename = os.path.join(new_model_files_dir, object_name + ".obj")
+    organ_part_filename = os.path.join(centered_model_files_dir, object_name + ".obj")
     bpy.ops.export_scene.obj(filepath=organ_part_filename, use_selection=True)
     organ_part.select = False
 
